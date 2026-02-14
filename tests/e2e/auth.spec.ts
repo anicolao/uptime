@@ -9,6 +9,9 @@ test.describe('Authentication', () => {
         await page.goto('/');
 
         // Use programmatic sign-in to bypass popup/COOP issues in CI
+        // Wait for the helper to be available (handles hydration delay)
+        await page.waitForFunction(() => (window as any).signInTestUser);
+
         await page.evaluate(async () => {
             const win = window as any;
             if (win.signInTestUser) {

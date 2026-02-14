@@ -52,11 +52,11 @@ However, **Option 1 (Firebase)** provides a more robust "application" feel and i
 
 The `README.md` in this repository will prioritize the **Option 1 (Firebase)** structure as requested, but the code structure can support swapping the "runner" (Trigger) if needed.
 
-## Option 3: High-Frequency Firebase (Real-Time)
+## Option 3: 1-Minute Firebase Monitor (Optimized Free Tier)
 
-A variation of Option 1 optimized for 5-second recurring checks within a low-cost or free modification.
+A variation of Option 1 optimized for frequent checks (every 1 minute) while ensuring strict adherence to free tier limits.
 
 -   **Database**: Uses **Realtime Database** instead of Firestore to avoid write limits.
--   **Method**: Cloud Function runs for 60 seconds, looping every 5 seconds.
--   **Cost**: Approaches the limits of the free tier (CPU-seconds) but avoids database costs.
--   **Details**: See [DESIGN_HIGH_FREQ.md](DESIGN_HIGH_FREQ.md) for the full breakdown and cost analysis.
+-   **Method**: Standard Cloud Scheduler trigger (every 1 minute).
+-   **Cost**: Extremely safe (uses ~2% of free compute limits).
+-   **Details**: See [DESIGN_FIREBASE_1MIN.md](DESIGN_FIREBASE_1MIN.md) for the full breakdown and cost analysis.

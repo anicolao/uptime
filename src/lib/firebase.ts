@@ -13,14 +13,19 @@ const firebaseConfig = {
     databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
 };
 
+
 let app: FirebaseApp | undefined;
 let db: Firestore;
 let rtdb: Database;
 
 if (browser) {
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-    db = getFirestore(app);
-    rtdb = getDatabase(app);
+    try {
+        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        db = getFirestore(app);
+        rtdb = getDatabase(app);
+    } catch (e) {
+        console.error('[FIREBASE] Initialization failed', e);
+    }
 }
 
 export { app, db, rtdb };

@@ -1,0 +1,1 @@
+import{f as o,e as t,o as c,g as l}from"./Dil_G6-C.js";function u(e){throw new Error("https://svelte.dev/e/lifecycle_outside_component")}function i(e){t===null&&u(),c&&t.l!==null?a(t).m.push(e):o(()=>{const n=l(e);if(typeof n=="function")return n})}function a(e){var n=e.l;return n.u??={a:[],b:[],m:[]}}export{i as o};

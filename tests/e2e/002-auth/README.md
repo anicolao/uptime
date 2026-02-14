@@ -32,3 +32,15 @@ Verifies the authentication flow, including sign-in and protected route access.
 
 ---
 
+### 03-admin-page
+
+**Description:** Admin page loads
+
+**Verifications:**
+- Header is "Admin Panel"
+- URL is /admin
+
+![Screenshot](screenshots/03-admin-page.png)
+
+---
+

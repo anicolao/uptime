@@ -41,5 +41,14 @@ test('Authentication Flow', async ({ page }, testInfo) => {
         ]
     });
 
+    await page.click('text=Admin');
+    await tester.step('03-admin-page', {
+        description: 'Admin page loads',
+        verifications: [
+            { spec: 'Header is "Admin Panel"', check: async () => await expect(page.locator('h1')).toHaveText('Admin Panel') },
+            { spec: 'URL is /admin', check: async () => await expect(page).toHaveURL(/.*\/admin/) }
+        ]
+    });
+
     tester.generateDocs();
 });

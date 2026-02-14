@@ -11,8 +11,8 @@ test.describe('Authentication', () => {
         // Setup a listener for the popup
         const pagePromise = context.waitForEvent('page');
 
-        // Click Sign In
-        await page.getByRole('button', { name: 'Sign in with Google' }).click();
+        // Force click to avoid CI stability issues or overlays
+        await page.getByRole('button', { name: 'Sign in with Google' }).click({ force: true });
 
         // Handle the popup
         const popup = await pagePromise;

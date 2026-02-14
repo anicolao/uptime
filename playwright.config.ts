@@ -7,8 +7,9 @@ export default defineConfig({
 	retries: process.env.CI ? 2 : 0,
 	workers: process.env.CI ? 1 : undefined,
 	reporter: 'html',
-	timeout: 120 * 1000, // 2 minutes for slow CI runners
 	use: {
+		actionTimeout: 2000,
+		navigationTimeout: 2000,
 		baseURL: 'http://localhost:5173',
 		trace: 'on-first-retry',
 		contextOptions: { reducedMotion: 'reduce' },
@@ -45,7 +46,7 @@ export default defineConfig({
 		},
 	],
 	expect: {
-		timeout: 10000,
+		timeout: 2000,
 		toHaveScreenshot: {
 			maxDiffPixels: 0,
 			threshold: 0,

@@ -9,7 +9,6 @@
 {:else if $user}
     <nav>
         <div class="links">
-            <a href="{base}/">Home</a>
             <a href="{base}/dashboard">Dashboard</a>
             <a href="{base}/admin">Admin</a>
         </div>

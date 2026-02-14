@@ -25,6 +25,14 @@ test.describe('Authentication', () => {
         // Adjust timeout as sign-in redirect + state update might take a moment
         await expect(page.locator('nav')).toBeVisible({ timeout: 10000 });
         await expect(page.getByRole('heading', { name: 'Authentication Required' })).not.toBeVisible();
+
+        // Verify redirection to dashboard
+        await expect(page).toHaveURL(/.*\/dashboard/);
+
+        // Verify Navigation Links
+        await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'Home' })).not.toBeVisible();
     });
 
     test('Unauthenticated user sees Auth Wall', async ({ page }) => {

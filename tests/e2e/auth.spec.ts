@@ -8,44 +8,15 @@ test.describe('Authentication', () => {
         // Go to home page
         await page.goto('/');
 
-        // Setup a listener for the popup
-        const pagePromise = context.waitForEvent('page');
-
-        // Dispatch click event directly to bypass Playwright stability checks
-        await page.getByRole('button', { name: 'Sign in with Google' }).dispatchEvent('click');
-        const newPage = await pagePromise;
-        const popup = newPage;
-        await popup.waitForLoadState();
-
-        // In the emulator, the Google Auth provider page usually has a simplified UI.
-        // We look for buttons that allow us to complete the sign-in.
-        // Common buttons in the emulator UI: "Add new account", "Auto-generate user info", "Sign in with Google.com"
-
-        // Debug: Log popup content to see what's actually there
-        try {
-            const content = await popup.content();
-            console.log('[POPUP] Content:', content);
-        } catch (e) {
-            console.log('[POPUP] Failed to get content:', e);
-        }
-
-        // Click "Add new account" if present
-        const addAccountBtn = popup.getByText('Add new account');
-        if (await addAccountBtn.isVisible()) {
-            await addAccountBtn.click({ force: true });
-        }
-
-        // Click "Auto-generate user info" if present
-        const autoGenBtn = popup.getByText('Auto-generate user info');
-        if (await autoGenBtn.isVisible()) {
-            await autoGenBtn.click({ force: true });
-        }
-
-        // Click "Sign in with Google.com" to finalize
-        await popup.getByText('Sign in with Google.com').click({ force: true });
-
-        // Wait for the popup to close
-        await popup.waitForEvent('close');
+        // Use programmatic sign-in to bypass popup/COOP issues in CI
+        await page.evaluate(async () => {
+            const win = window as any;
+            if (win.signInTestUser) {
+                await win.signInTestUser();
+            } else {
+                throw new Error('signInTestUser helper not found on window. Ensure VITE_FIREBASE_USE_EMULATORS=true.');
+            }
+        });
 
         // Verify we are logged in (Auth Wall gone, Nav visible)
         // Adjust timeout as sign-in redirect + state update might take a moment

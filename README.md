@@ -45,7 +45,7 @@ It is designed to stay within the free tiers of modern cloud providers, utilizin
 
 ## Architecture
 
-See [DESIGN_ALTERNATIVES.md](DESIGN_ALTERNATIVES.md) for a detailed comparison of implementation options (Firebase vs. GitHub Actions).
+See [MVP_DESIGN.md](MVP_DESIGN.md) for the detailed design and implementation steps.
 
 ## License
 

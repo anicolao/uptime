@@ -1,16 +1,13 @@
-# Fix E2E Test Standards
+# Cleanup and Standardize on 1-Minute Firebase Design
 
-## User Request
-
-> I over-eagerly accepted the last PR without noticing that the e2e test does not conform to standards. It is supposed to generate a README.md and have programmatic verification of what is in each screenshot. Fix it and follow WORKFLOW.md rigidly to put up a PR that corrects the e2e test.
+## Goal
+To clean up the repository by removing obsolete design alternatives and consolidating documentation into a single relevant design document (`MVP_DESIGN.md`) that reflects the chosen 1-Minute Firebase Monitor architecture.
 
 ## Changes
+- **Deleted**: `DESIGN_ALTERNATIVES.md` (Obsolete options).
+- **Deleted**: `DESIGN_FIREBASE_1MIN.md` (Content migrated to `MVP_DESIGN.md`).
+- **Created**: `MVP_DESIGN.md` as the single source of truth for the design and implementation steps.
+- **Updated**: `README.md` to point to the new design document and remove confusing alternatives.
 
-- Updated `TestStepHelper` in `tests/e2e/helpers/test-step-helper.ts` to generate `README.md` automatically.
-- Refactored `auth.spec.ts` to `tests/e2e/002-auth/auth.spec.ts` using the new helper.
-- Added documentation artifacts in `docs/`.
-
-## Verification
-
-- `001-scaffolding.spec.ts` verified to pass and generate correct documentation.
-- `auth.spec.ts` implemented but requires Firebase Emulators (check CI).
+## Original User Prompt
+> OK we have a basic project scaffold and a design where we will update the metrics every minute using the free tier of firebase. Examine the implementation here and all the design files, with an eye towards cleaning up any construction dust/cruft — we considered multiple design alternatives, but now that we've settled on an approach I want everything in the repository to reflect only the approach we are on. *Delete* old ideas and documents, make the current documentation into a coherent description of what we're building. Create an MVP_DESIGN.md that outlines the steps required to go from teh current scaffold to a fully working basic implementation of the 1MIN design. Follow WORKFLOW.md to put up these changse as a new PR for review.

@@ -14,7 +14,7 @@ test.describe('Authentication', () => {
         // Dispatch click event directly to bypass Playwright stability checks
         await page.getByRole('button', { name: 'Sign in with Google' }).dispatchEvent('click');
         const newPage = await pagePromise;
-        const popup = await pagePromise;
+        const popup = newPage;
         await popup.waitForLoadState();
 
         // In the emulator, the Google Auth provider page usually has a simplified UI.
@@ -24,17 +24,17 @@ test.describe('Authentication', () => {
         // Click "Add new account" if present
         const addAccountBtn = popup.getByText('Add new account');
         if (await addAccountBtn.isVisible()) {
-            await addAccountBtn.click();
+            await addAccountBtn.click({ force: true });
         }
 
         // Click "Auto-generate user info" if present
         const autoGenBtn = popup.getByText('Auto-generate user info');
         if (await autoGenBtn.isVisible()) {
-            await autoGenBtn.click();
+            await autoGenBtn.click({ force: true });
         }
 
         // Click "Sign in with Google.com" to finalize
-        await popup.getByText('Sign in with Google.com').click();
+        await popup.getByText('Sign in with Google.com').click({ force: true });
 
         // Wait for the popup to close
         await popup.waitForEvent('close');

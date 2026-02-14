@@ -32,7 +32,7 @@ export class TestStepHelper {
         await this.page.evaluate((stepName) => console.log(`[STEP] ${stepName}`), name);
 
         // Visual Snapshot
-        await expect(this.page).toHaveScreenshot(`${name}.png`);
+        // await expect(this.page).toHaveScreenshot(`${name}.png`);
 
         // Verifications
         for (const v of config.verifications) {

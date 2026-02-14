@@ -21,6 +21,14 @@ test.describe('Authentication', () => {
         // We look for buttons that allow us to complete the sign-in.
         // Common buttons in the emulator UI: "Add new account", "Auto-generate user info", "Sign in with Google.com"
 
+        // Debug: Log popup content to see what's actually there
+        try {
+            const content = await popup.content();
+            console.log('[POPUP] Content:', content);
+        } catch (e) {
+            console.log('[POPUP] Failed to get content:', e);
+        }
+
         // Click "Add new account" if present
         const addAccountBtn = popup.getByText('Add new account');
         if (await addAccountBtn.isVisible()) {

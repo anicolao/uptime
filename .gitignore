@@ -11,10 +11,13 @@ build/
 !.env.example
 
 # Playwright
-test-results/
-playwright-report/
-blob-report/
-playwright/.cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+data/
+trace/
+report-update/
 !tests/e2e/**/screenshots/
 
 # Vite

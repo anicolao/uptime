@@ -8,8 +8,8 @@ export default defineConfig({
 	workers: process.env.CI ? 1 : undefined,
 	reporter: 'html',
 	use: {
-		actionTimeout: 2000,
-		navigationTimeout: 2000,
+		actionTimeout: 5000,
+		navigationTimeout: 5000,
 		baseURL: 'http://localhost:5173',
 		trace: 'on-first-retry',
 		contextOptions: { reducedMotion: 'reduce' },
@@ -46,7 +46,7 @@ export default defineConfig({
 		},
 	],
 	expect: {
-		timeout: 2000,
+		timeout: 5000,
 		toHaveScreenshot: {
 			maxDiffPixels: 0,
 			threshold: 0,

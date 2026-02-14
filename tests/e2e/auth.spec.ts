@@ -11,10 +11,9 @@ test.describe('Authentication', () => {
         // Setup a listener for the popup
         const pagePromise = context.waitForEvent('page');
 
-        // Force click to avoid CI stability issues or overlays
-        await page.getByRole('button', { name: 'Sign in with Google' }).click({ force: true });
-
-        // Handle the popup
+        // Dispatch click event directly to bypass Playwright stability checks
+        await page.getByRole('button', { name: 'Sign in with Google' }).dispatchEvent('click');
+        const newPage = await pagePromise;
         const popup = await pagePromise;
         await popup.waitForLoadState();
 

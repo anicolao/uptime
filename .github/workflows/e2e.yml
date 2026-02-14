@@ -45,7 +45,7 @@ jobs:
 
       - name: Run Playwright tests
         id: playwright
-        run: npm run test:e2e
+        run: npx firebase emulators:exec --project "$VITE_FIREBASE_PROJECT_ID" --import ./firebase-export "npm run test:e2e"
         env:
           CI: true
           # Dummy values for build/test time

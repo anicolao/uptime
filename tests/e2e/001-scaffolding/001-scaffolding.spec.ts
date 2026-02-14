@@ -7,7 +7,7 @@ test('App Scaffolding Verification', async ({ page }, testInfo) => {
 
     await page.goto('/');
 
-    await tester.step('01-home-page', {
+    await tester.step('home-page', {
         description: 'Home page loads with navigation',
         verifications: [
             { spec: 'Nav is visible', check: async () => await expect(page.locator('nav')).toBeVisible() },
@@ -17,7 +17,7 @@ test('App Scaffolding Verification', async ({ page }, testInfo) => {
     });
 
     await page.click('text=Admin');
-    await tester.step('02-admin-page', {
+    await tester.step('admin-page', {
         description: 'Admin page loads',
         verifications: [
             { spec: 'Header is "Admin Panel"', check: async () => await expect(page.locator('h1')).toHaveText('Admin Panel') }
@@ -25,7 +25,7 @@ test('App Scaffolding Verification', async ({ page }, testInfo) => {
     });
 
     await page.click('text=Dashboard');
-    await tester.step('03-dashboard-page', {
+    await tester.step('dashboard-page', {
         description: 'Dashboard page loads',
         verifications: [
             { spec: 'Header is "Uptime Dashboard"', check: async () => await expect(page.locator('h1')).toHaveText('Uptime Dashboard') }

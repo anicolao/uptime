@@ -10,10 +10,8 @@ export default defineConfig({
 	use: {
 		baseURL: 'http://localhost:5173',
 		trace: 'on-first-retry',
-		screenshot: 'only-on-failure',
-		video: 'retain-on-failure',
-		
-		// Force software rendering for consistency across environments
+		contextOptions: { reducedMotion: 'reduce' },
+		serviceWorkers: 'block',
 		launchOptions: {
 			args: [
 				'--font-render-hinting=none',
@@ -27,6 +25,8 @@ export default defineConfig({
 				'--disable-gpu',
 				'--use-gl=swiftshader',
 				'--disable-smooth-scrolling',
+				'--disable-partial-raster',
+				'--disable-partial-raster',
 			],
 		},
 		viewport: { width: 1280, height: 720 },
@@ -34,6 +34,15 @@ export default defineConfig({
 		timezoneId: 'America/New_York',
 		locale: 'en-US',
 	},
+	snapshotPathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}.png',
+	projects: [
+		{
+			name: 'chromium',
+			use: {
+				browserName: 'chromium',
+			},
+		},
+	],
 	expect: {
 		timeout: 5000,
 		toHaveScreenshot: {

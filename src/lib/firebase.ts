@@ -28,6 +28,17 @@ if (browser) {
         rtdb = getDatabase(app);
         auth = getAuth(app);
         googleProvider = new GoogleAuthProvider();
+
+        if (import.meta.env.VITE_FIREBASE_USE_EMULATORS === 'true') {
+            const { connectFirestoreEmulator } = await import('firebase/firestore');
+            const { connectDatabaseEmulator } = await import('firebase/database');
+            const { connectAuthEmulator } = await import('firebase/auth');
+
+            console.log('[FIREBASE] Connecting to Emulators...');
+            connectFirestoreEmulator(db, 'localhost', 8080);
+            connectDatabaseEmulator(rtdb, 'localhost', 9000);
+            connectAuthEmulator(auth, 'http://localhost:9099');
+        }
     } catch (e) {
         console.error('[FIREBASE] Initialization failed', e);
     }

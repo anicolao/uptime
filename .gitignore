@@ -32,3 +32,5 @@ vite.config.js.timestamp-*
 *.njsproj
 *.sln
 *.sw?
+*-debug.log
+flake.lock

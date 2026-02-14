@@ -7,6 +7,13 @@ if ! command -v gh &> /dev/null; then
     exit 1
 fi
 
+if [ -f .env ]; then
+    echo "Loading secrets from .env..."
+    export $(cat .env | xargs)
+else
+    echo "Warning: .env file not found. Assuming variables are exported in shell."
+fi
+
 echo "Setting secrets for repo..."
 
 # Set secrets explicitly to avoid leaking everything in .env

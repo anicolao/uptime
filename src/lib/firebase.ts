@@ -54,6 +54,23 @@ if (browser) {
             connectFirestoreEmulator(db, '127.0.0.1', 8080);
             connectDatabaseEmulator(rtdb, '127.0.0.1', 9000);
             connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
+
+            // Expose helper for E2E tests to bypass popup/COOP issues
+            (window as any).signInTestUser = async () => {
+                try {
+                    const { signInAnonymously, updateProfile } = await import('firebase/auth');
+                    console.log('[E2E] Signing in anonymously...');
+                    const cred = await signInAnonymously(auth);
+                    // Set a display name so UI looks correct
+                    if (cred.user) {
+                        await updateProfile(cred.user, { displayName: 'Test User' });
+                    }
+                    console.log('[E2E] Signed in:', cred.user?.uid);
+                } catch (e) {
+                    console.error('[E2E] Sign in failed:', e);
+                    throw e;
+                }
+            };
         }
     } catch (e) {
         console.error('[FIREBASE] Initialization failed', e);

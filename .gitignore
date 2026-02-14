@@ -33,3 +33,9 @@ vite.config.js.timestamp-*
 *.sln
 *.sw?
 *-debug.log
+
+# Local logs
+ci_log*.txt
+
+# Backups
+*.bak

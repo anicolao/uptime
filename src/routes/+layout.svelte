@@ -1,11 +1,15 @@
 <script>
     import { base } from '$app/paths';
+    import Signin from '$lib/components/Signin.svelte';
 </script>
 
 <nav>
-    <a href="{base}/">Home</a>
-    <a href="{base}/dashboard">Dashboard</a>
-    <a href="{base}/admin">Admin</a>
+    <div class="links">
+        <a href="{base}/">Home</a>
+        <a href="{base}/dashboard">Dashboard</a>
+        <a href="{base}/admin">Admin</a>
+    </div>
+    <Signin />
 </nav>
 
 <slot />
@@ -15,6 +19,9 @@
         padding: 1rem;
         background: #f4f4f4;
         margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
     a {
         margin-right: 1rem;

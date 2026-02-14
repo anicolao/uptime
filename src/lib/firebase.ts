@@ -14,6 +14,22 @@ const firebaseConfig = {
     databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
 };
 
+console.log('[FIREBASE] Config Check:', {
+    apiKeyPresent: !!firebaseConfig.apiKey,
+    authDomainPresent: !!firebaseConfig.authDomain,
+    databaseURL: firebaseConfig.databaseURL,
+    usingEmulators: import.meta.env.VITE_FIREBASE_USE_EMULATORS
+});
+
+// Config validation
+const missingKeys = Object.entries(firebaseConfig)
+    .filter(([_, v]) => !v)
+    .map(([k]) => k);
+
+if (missingKeys.length > 0) {
+    throw new Error(`[FIREBASE] Missing Firebase config keys: ${missingKeys.join(', ')}. Please check your .env file.`);
+}
+
 
 let app: FirebaseApp | undefined;
 let db: Firestore;

@@ -11,7 +11,8 @@ test('App Scaffolding Verification', async ({ page }, testInfo) => {
         description: 'Home page loads with navigation',
         verifications: [
             { spec: 'Nav is visible', check: async () => await expect(page.locator('nav')).toBeVisible() },
-            { spec: 'Home link is visible', check: async () => await expect(page.locator('a[href="/"]')).toBeVisible() }
+            // Use stricter selector that allows for base path variations or just check text
+            { spec: 'Home link is visible', check: async () => await expect(page.getByRole('link', { name: 'Home' })).toBeVisible() }
         ]
     });
 

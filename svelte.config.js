@@ -19,7 +19,7 @@ const config = {
 			strict: true
 		}),
 		paths: {
-			base: process.argv.includes('dev') ? '' : process.env.PUBLIC_BASE_PATH
+			base: process.env.PUBLIC_BASE_PATH || ''
 		}
 	}
 };

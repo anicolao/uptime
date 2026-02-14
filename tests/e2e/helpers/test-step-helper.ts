@@ -1,4 +1,6 @@
 import { expect, type Page, type TestInfo } from '@playwright/test';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export interface Verification {
     spec: string;
@@ -32,7 +34,8 @@ export class TestStepHelper {
         await this.page.evaluate((stepName) => console.log(`[STEP] ${stepName}`), name);
 
         // Visual Snapshot
-        // await expect(this.page).toHaveScreenshot(`${name}.png`);
+        const screenshotName = `${name}.png`;
+        await expect(this.page).toHaveScreenshot(screenshotName);
 
         // Verifications
         for (const v of config.verifications) {
@@ -48,7 +51,30 @@ export class TestStepHelper {
     }
 
     generateDocs() {
-        console.log('Generating Docs (Placeholder for now)');
-        // In a real implementation this might write a markdown file
+        if (!this.title) {
+            console.warn('Metadata not set for TestStepHelper. Skipping docs generation.');
+            return;
+        }
+
+        const testDir = path.dirname(this.testInfo.file);
+        const readmePath = path.join(testDir, 'README.md');
+
+        let md = `# ${this.title}\n\n`;
+        md += `${this.summary}\n\n`;
+        md += `## Test Steps\n\n`;
+
+        this.steps.forEach(step => {
+            md += `### ${step.name}\n\n`;
+            md += `**Description:** ${step.description}\n\n`;
+            md += `**Verifications:**\n`;
+            step.verifications.forEach(v => {
+                md += `- ${v}\n`;
+            });
+            md += `\n![Screenshot](screenshots/${step.name}.png)\n\n`;
+            md += `---\n\n`;
+        });
+
+        fs.writeFileSync(readmePath, md);
+        console.log(`Generated documentation at: ${readmePath}`);
     }
 }

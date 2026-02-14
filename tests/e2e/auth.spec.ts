@@ -17,4 +17,16 @@ test.describe('Authentication', () => {
 
         // TODO: Implement full emulator sign-in interaction
     });
+
+    test('Unauthenticated user sees Auth Wall', async ({ page }) => {
+        await page.goto('/');
+
+        // Verify Auth Wall
+        await expect(page.getByRole('heading', { name: 'Authentication Required' })).toBeVisible();
+        await expect(page.getByText('Please sign in to access the Uptime Monitor.')).toBeVisible();
+
+        // Verify Sign In Button
+        const signInButton = page.getByRole('button', { name: 'Sign in with Google' });
+        await expect(signInButton).toBeVisible();
+    });
 });

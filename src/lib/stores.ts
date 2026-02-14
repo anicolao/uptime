@@ -3,7 +3,7 @@ import { auth } from './firebase';
 import { onAuthStateChanged, type User } from 'firebase/auth';
 import { browser } from '$app/environment';
 
-export const user = writable<User | null>(null);
+export const user = writable<User | null | undefined>(undefined);
 
 if (browser && auth) {
     onAuthStateChanged(auth, (u) => {

@@ -35,9 +35,9 @@ if (browser) {
             const { connectAuthEmulator } = await import('firebase/auth');
 
             console.log('[FIREBASE] Connecting to Emulators...');
-            connectFirestoreEmulator(db, 'localhost', 8080);
-            connectDatabaseEmulator(rtdb, 'localhost', 9000);
-            connectAuthEmulator(auth, 'http://localhost:9099');
+            connectFirestoreEmulator(db, '127.0.0.1', 8080);
+            connectDatabaseEmulator(rtdb, '127.0.0.1', 9000);
+            connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
         }
     } catch (e) {
         console.error('[FIREBASE] Initialization failed', e);

@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication', () => {
     test('User can sign in', async ({ page, context }) => {
+        // Monitor console logs to debug CI issues
+        page.on('console', msg => console.log(`[BROWSER] ${msg.type()}: ${msg.text()}`));
+
         // Go to home page
         await page.goto('/');
 

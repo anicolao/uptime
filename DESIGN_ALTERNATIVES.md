@@ -51,3 +51,12 @@ For a strictly "free tier" goal with minimal maintenance, **Option 2 (GitHub Act
 However, **Option 1 (Firebase)** provides a more robust "application" feel and is better if you plan to expand features significantly (e.g., user authentication, complex historical querying).
 
 The `README.md` in this repository will prioritize the **Option 1 (Firebase)** structure as requested, but the code structure can support swapping the "runner" (Trigger) if needed.
+
+## Option 3: High-Frequency Firebase (Real-Time)
+
+A variation of Option 1 optimized for 5-second recurring checks within a low-cost or free modification.
+
+-   **Database**: Uses **Realtime Database** instead of Firestore to avoid write limits.
+-   **Method**: Cloud Function runs for 60 seconds, looping every 5 seconds.
+-   **Cost**: Approaches the limits of the free tier (CPU-seconds) but avoids database costs.
+-   **Details**: See [DESIGN_HIGH_FREQ.md](DESIGN_HIGH_FREQ.md) for the full breakdown and cost analysis.

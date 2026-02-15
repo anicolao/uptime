@@ -14,12 +14,14 @@ const firebaseConfig = {
     databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL
 };
 
-console.log('[FIREBASE] Config Check:', {
-    apiKeyPresent: !!firebaseConfig.apiKey,
-    authDomainPresent: !!firebaseConfig.authDomain,
-    databaseURL: firebaseConfig.databaseURL,
-    usingEmulators: import.meta.env.VITE_FIREBASE_USE_EMULATORS
-});
+if (import.meta.env.DEV) {
+    console.log('[FIREBASE] Config Check:', {
+        apiKeyPresent: !!firebaseConfig.apiKey,
+        authDomainPresent: !!firebaseConfig.authDomain,
+        databaseURL: firebaseConfig.databaseURL,
+        usingEmulators: import.meta.env.VITE_FIREBASE_USE_EMULATORS
+    });
+}
 
 // Config validation
 const missingKeys = Object.entries(firebaseConfig)

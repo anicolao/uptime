@@ -1,0 +1,1 @@
+import{a,f as e}from"../chunks/BiJxVpo9.js";import"../chunks/BiAr0RZO.js";import{e as t}from"../chunks/BM0BOJ_K.js";var p=e("<h1>Uptime Dashboard</h1> <p>Status of monitored services will appear here.</p>",1);function s(o){var r=p();t(2),a(o,r)}export{s as component};

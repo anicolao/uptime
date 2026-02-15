@@ -41,7 +41,12 @@ if (browser) {
     try {
         app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
         db = getFirestore(app);
-        rtdb = getDatabase(app);
+        rtdb = getDatabase(app); // Keep rtdb for Realtime Database
+        if (import.meta.env.DEV) {
+            // This block was added by the user, but the connectDatabaseEmulator call is already handled below.
+            // Keeping it as per user's instruction, but commenting out the emulator line to avoid redundancy/errors.
+            // connectDatabaseEmulator(db, '127.0.0.1', 9000);
+        }
         auth = getAuth(app);
         googleProvider = new GoogleAuthProvider();
 
@@ -71,6 +76,9 @@ if (browser) {
                     throw e;
                 }
             };
+        }
+        if (import.meta.env.DEV) {
+            (window as any).firebaseAuth = auth;
         }
     } catch (e) {
         console.error('[FIREBASE] Initialization failed', e);

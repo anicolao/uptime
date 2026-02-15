@@ -11,7 +11,7 @@ if (!getApps().length) {
     process.env.GCLOUD_PROJECT = 'antigravity-uptime'; // Match .firebaserc
     initializeApp({
         projectId: 'antigravity-uptime',
-        databaseURL: 'http://127.0.0.1:9000?ns=antigravity-uptime'
+        databaseURL: 'http://127.0.0.1:9000?ns=antigravity-uptime-default-rtdb'
     });
 }
 
@@ -82,8 +82,11 @@ test.describe('MVP 1-Minute Monitor', () => {
             expect(uid).toBeTruthy();
 
             // Seed Admin
-            console.log(`Seeding admin permission for UID: ${uid}`);
             await db.ref(`admins/${uid}`).set(true);
+
+            // Verify seed
+            const adminSnap = await db.ref(`admins/${uid}`).once('value');
+            expect(adminSnap.exists()).toBe(true);
         });
 
         await step.step('Admin: Add Service', {

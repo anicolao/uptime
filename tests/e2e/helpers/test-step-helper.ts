@@ -30,8 +30,12 @@ export class TestStepHelper {
         this.summary = summary;
     }
 
-    async step(name: string, config: StepConfig) {
+    async step(name: string, config: StepConfig, action?: () => Promise<void>) {
         await this.page.evaluate((stepName) => console.log(`[STEP] ${stepName}`), name);
+
+        if (action) {
+            await action();
+        }
 
         // Visual Snapshot
         const screenshotName = `${name}.png`;

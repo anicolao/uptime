@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { base } from '$app/paths';
   import { rtdb } from '$lib/firebase';
   import { ref, onValue } from 'firebase/database';
   import { onMount } from 'svelte';

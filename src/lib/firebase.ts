@@ -79,7 +79,7 @@ if (browser) {
                 }
             };
         }
-        if (import.meta.env.DEV) {
+        if (import.meta.env.DEV || import.meta.env.VITE_FIREBASE_USE_EMULATORS === 'true') {
             (window as any).firebaseAuth = auth;
         }
     } catch (e) {

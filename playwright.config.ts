@@ -56,7 +56,7 @@ export default defineConfig({
 		},
 	},
 	webServer: {
-		command: 'npm run build && npm run preview -- --port 5173',
+		command: 'VITE_FIREBASE_USE_EMULATORS=true npm run build && npm run preview -- --port 5173',
 		url: 'http://localhost:5173',
 		reuseExistingServer: !process.env.CI,
 		stdout: 'pipe',

@@ -1,6 +1,8 @@
 name: Update Screenshots
 
 on:
+  push:
+    branches: [feature/mvp-implementation]
   workflow_dispatch:
 
 jobs:

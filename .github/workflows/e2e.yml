@@ -48,7 +48,7 @@ jobs:
 
       - name: Run Playwright tests
         id: playwright
-        run: CI=1 npx firebase emulators:exec --project "$VITE_FIREBASE_PROJECT_ID" "npx playwright test"
+        run: CI=1 npx firebase emulators:exec --project demo-antigravity-uptime "npx playwright test"
         env:
           VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
           VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}

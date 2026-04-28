@@ -8,10 +8,10 @@ import { getDatabase } from 'firebase-admin/database';
 if (!getApps().length) {
     process.env.FIREBASE_DATABASE_EMULATOR_HOST = '127.0.0.1:9000';
     process.env.FIREBASE_AUTH_EMULATOR_HOST = '127.0.0.1:9099';
-    process.env.GCLOUD_PROJECT = 'antigravity-uptime'; // Match .firebaserc
+    process.env.GCLOUD_PROJECT = 'demo-antigravity-uptime'; // Use demo- prefix
     initializeApp({
-        projectId: 'antigravity-uptime',
-        databaseURL: 'http://127.0.0.1:9000?ns=antigravity-uptime-default-rtdb'
+        projectId: 'demo-antigravity-uptime',
+        databaseURL: 'http://127.0.0.1:9000?ns=demo-antigravity-uptime-default-rtdb'
     });
 }
 
@@ -125,8 +125,7 @@ test.describe('MVP 1-Minute Monitor', () => {
             // Note: In emulators, HTTP functions are at http://127.0.0.1:5001/<project>/us-central1/<function>
             // We need to fetch this URL.
             // The emulator command usually picks up project ID from .firebaserc or --project.
-            // Let's assume 'antigravity-uptime' from .firebaserc.
-            const triggerUrl = `http://127.0.0.1:5001/antigravity-uptime/us-central1/manualCheck`;
+            const triggerUrl = `http://127.0.0.1:5001/demo-antigravity-uptime/us-central1/manualCheck`;
             console.log(`Triggering monitor at ${triggerUrl}`);
             const response = await page.request.get(triggerUrl);
             expect(response.status()).toBe(200);

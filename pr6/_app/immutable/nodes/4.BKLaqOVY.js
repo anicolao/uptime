@@ -1,0 +1,1 @@
+import{a as t,f as s}from"../chunks/Rd2UJt_-.js";import"../chunks/CtcL8bKV.js";import{a as i,c as m,r as p}from"../chunks/CjoWNlxj.js";import{S as e}from"../chunks/DBWxah4Z.js";var n=s('<div class="container mx-auto p-4"><h1 class="text-3xl font-bold mb-6">Uptime Dashboard</h1> <!></div>');function h(o){var a=n(),r=i(m(a),2);e(r,{}),p(a),t(o,a)}export{h as component};

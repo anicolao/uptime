@@ -36,16 +36,16 @@ test('Authentication Flow', async ({ page }, testInfo) => {
             { spec: 'Auth Window is gone', check: async () => await expect(page.getByRole('heading', { name: 'Authentication Required' })).not.toBeVisible() },
             { spec: 'Nav is visible', check: async () => await expect(page.locator('nav')).toBeVisible() },
             { spec: 'Dashboard link is visible', check: async () => await expect(page.getByRole('link', { name: 'Dashboard' })).toBeVisible() },
-            { spec: 'Admin link is visible', check: async () => await expect(page.getByRole('link', { name: 'Admin' })).toBeVisible() },
+            { spec: 'Admin link is visible', check: async () => await expect(page.getByRole('link', { name: 'Admin', exact: true })).toBeVisible() },
             { spec: 'URL is /dashboard', check: async () => await expect(page).toHaveURL(/.*\/dashboard/) }
         ]
     });
 
-    await page.click('text=Admin');
+    await page.getByRole('link', { name: 'Admin', exact: true }).click();
     await tester.step('03-admin-page', {
         description: 'Admin page loads',
         verifications: [
-            { spec: 'Header is "Admin Panel"', check: async () => await expect(page.locator('h1')).toHaveText('Admin Panel') },
+            { spec: 'Header is "Admin Dashboard"', check: async () => await expect(page.locator('h1')).toHaveText('Admin Dashboard') },
             { spec: 'URL is /admin', check: async () => await expect(page).toHaveURL(/.*\/admin/) }
         ]
     });

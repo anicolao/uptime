@@ -91,9 +91,12 @@ async function performChecks() {
             id: service.id,
             up,
             latency,
-            lastChecked: Date.now(),
-            error: up ? undefined : error
+            lastChecked: Date.now()
         };
+
+        if (!up && error) {
+            status.error = error;
+        }
 
         await db.ref(`status/${service.id}`).set(status);
         await db.ref(`history/${service.id}`).push(status);

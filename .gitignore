@@ -3,6 +3,10 @@ node_modules
 .DS_Store
 dist/
 
+# Functions
+functions/lib/
+functions/node_modules/
+
 # SvelteKit
 .svelte-kit
 build/

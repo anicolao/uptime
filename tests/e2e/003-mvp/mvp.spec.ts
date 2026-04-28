@@ -92,7 +92,7 @@ test.describe('MVP 1-Minute Monitor', () => {
         await step.step('Admin: Add Service', {
             description: 'Navigate to Admin and add a service',
             verifications: [
-                { spec: 'Success Message', check: async () => await expect(page.locator('text=dispatch dispatched!')).toBeVisible() }, // Approximate text match
+                { spec: 'Success Message', check: async () => await expect(page.locator('text=add event dispatched!')).toBeVisible() }, // Approximate text match
                 { spec: 'Event in List', check: async () => await expect(page.locator('text=ADD_SERVICE')).toBeVisible() }
             ]
         }, async () => {

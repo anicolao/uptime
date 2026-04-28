@@ -2,6 +2,12 @@
     import { base } from '$app/paths';
     import Signin from '$lib/components/Signin.svelte';
     import { user } from '$lib/stores';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
+
+    $: if ($user && ($page.url.pathname === `${base}/` || $page.url.pathname === '/')) {
+        goto(`${base}/dashboard`);
+    }
 </script>
 
 {#if $user === undefined}

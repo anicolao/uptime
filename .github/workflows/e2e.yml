@@ -23,7 +23,9 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm ci --prefix functions
         env:
           VITE_FIREBASE_USE_EMULATORS: "true"
 

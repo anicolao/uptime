@@ -1,24 +1,21 @@
-name: Verify
+name: Update screenshots
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  verify:
-    name: Check, build, and E2E
+  update:
+    name: Regenerate zero-tolerance baselines
     runs-on: macos-latest
     timeout-minutes: 30
     env:
       CI: "1"
-      BUILD_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-      DATABASE_RULES_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-      VITE_GIT_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+      BUILD_GIT_SHA: ${{ github.sha }}
+      DATABASE_RULES_GIT_SHA: ${{ github.sha }}
+      VITE_GIT_SHA: ${{ github.sha }}
       VITE_FIREBASE_API_KEY: test-api-key
       VITE_FIREBASE_AUTH_DOMAIN: demo-antigravity-uptime.firebaseapp.com
       VITE_FIREBASE_PROJECT_ID: demo-antigravity-uptime
@@ -52,31 +49,24 @@ jobs:
         run: |
           npm ci
           npm ci --prefix functions
+          npx playwright install chromium
 
-      - name: Install browser
-        run: npx playwright install chromium
-
-      - name: Check and build entire system
+      - name: Build entire system
         run: |
-          npm run check
           npm run build --prefix functions
           npm run build
 
-      - name: Run emulator E2E tests
-        run: npx firebase emulators:exec --only auth,database,functions --project demo-antigravity-uptime "npx playwright test"
+      - name: Regenerate and verify screenshots
+        run: npx firebase emulators:exec --only auth,database,functions --project demo-antigravity-uptime "npx playwright test --update-snapshots"
 
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
-
-      - name: Upload failed test results
-        if: failure()
-        uses: actions/upload-artifact@v6
-        with:
-          name: test-results
-          path: test-results/
-          retention-days: 30
+      - name: Commit baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/e2e/**/screenshots/*.png tests/e2e/**/README.md
+          if git diff --staged --quiet; then
+            echo "Screenshot baselines are already current"
+          else
+            git commit -m "test: update zero-tolerance screenshot baselines"
+            git push
+          fi

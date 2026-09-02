@@ -3,6 +3,10 @@ node_modules
 .DS_Store
 dist/
 
+# Functions
+functions/lib/
+functions/node_modules/
+
 # SvelteKit
 .svelte-kit
 build/
@@ -32,10 +36,12 @@ vite.config.js.timestamp-*
 *.njsproj
 *.sln
 *.sw?
+gha-creds-*.json
 *-debug.log
 
 # Local logs
 ci_log*.txt
+firebase.local.json
 
 # Backups
 *.bak

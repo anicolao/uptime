@@ -1,22 +1,20 @@
-<script>
-    import { goto } from '$app/navigation';
-    import { base } from '$app/paths';
-    import { onMount } from 'svelte';
+<script lang="ts">
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
 
-    onMount(() => {
-        goto(`${base}/dashboard`);
-    });
+  onMount(() => {
+    void goto(`${base}/dashboard`, { replaceState: true });
+  });
 </script>
 
-<div class="center-screen">
-    <p>Redirecting to Dashboard...</p>
-</div>
+<p class="redirect">Opening dashboard…</p>
 
 <style>
-    .center-screen {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+  .redirect {
+    margin: 0;
+    padding: 3rem;
+    color: #64748b;
+    text-align: center;
+  }
 </style>

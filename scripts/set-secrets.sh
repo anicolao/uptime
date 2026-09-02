@@ -39,5 +39,12 @@ set_secret "VITE_FIREBASE_STORAGE_BUCKET"
 set_secret "VITE_FIREBASE_MESSAGING_SENDER_ID"
 set_secret "VITE_FIREBASE_APP_ID"
 set_secret "VITE_FIREBASE_DATABASE_URL"
+set_secret "GOOGLE_CREDENTIALS"
+
+if [ -n "${ALERT_WEBHOOK_URL:-}" ]; then
+    set_secret "ALERT_WEBHOOK_URL"
+else
+    echo "Optional secret ALERT_WEBHOOK_URL is empty; alert delivery is disabled."
+fi
 
 echo "Done! Secrets updated."

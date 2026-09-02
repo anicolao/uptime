@@ -1,6 +1,68 @@
 {
-    "rules": {
-        ".read": "auth != null",
-        ".write": "auth != null"
+  "rules": {
+    "events": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).val() === true",
+      "$eventId": {
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true && !data.exists()",
+        ".validate": "newData.hasChildren(['type', 'payload', 'timestamp'])",
+        "type": {
+          ".validate": "newData.isString() && (newData.val() === 'ADD_SERVICE' || newData.val() === 'REMOVE_SERVICE' || newData.val() === 'UPDATE_SERVICE')"
+        },
+        "timestamp": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 60000"
+        },
+        "user": {
+          ".validate": "newData.isString() && newData.val().length <= 320"
+        },
+        "payload": {
+          ".validate": "(newData.parent().child('type').val() === 'REMOVE_SERVICE' && newData.hasChildren(['id'])) || ((newData.parent().child('type').val() === 'ADD_SERVICE' || newData.parent().child('type').val() === 'UPDATE_SERVICE') && newData.hasChildren(['id', 'name', 'url', 'createdAt']))",
+          "id": {
+            ".validate": "newData.isString() && newData.val().matches(/^[A-Za-z0-9_-]{1,128}$/)"
+          },
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 100"
+          },
+          "url": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2048"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0"
+          },
+          "createdBy": {
+            ".validate": "newData.isString() && newData.val().length <= 320"
+          }
+        }
+      }
+    },
+    "services": {
+      ".read": "auth != null",
+      ".write": false,
+      ".indexOn": "name"
+    },
+    "status": {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "history": {
+      ".read": "auth != null",
+      ".write": false,
+      "$serviceId": {
+        ".indexOn": "lastChecked"
+      }
+    },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    },
+    "system": {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
     }
+  }
 }

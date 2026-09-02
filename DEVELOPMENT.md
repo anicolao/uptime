@@ -1,39 +1,53 @@
-# Development Guide
+# Development guide
 
-## Environment Setup
+## Toolchain
 
-This project uses [Nix](https://nixos.org/) to manage development dependencies, ensuring a consistent environment for all contributors.
+The Nix development shell supplies Node.js 22, JDK 21, Google Cloud SDK, and Git:
 
-### Prerequisites
-
-1.  **Install Nix**:
-    Follow the instructions at [nixos.org/download](https://nixos.org/download.html).
-
-2.  **Enable Flakes**:
-    Ensure your `~/.config/nix/nix.conf` or `/etc/nix/nix.conf` contains:
-    ```
-    experimental-features = nix-command flakes
-    ```
-
-3.  **Enter the Environment**:
-    Run the following command in the project root:
-    ```bash
-    nix develop
-    ```
-    This will drop you into a shell with all necessary tools installed, including:
-    - Node.js 20
-    - Java (JDK 21) for Firebase Emulators
-    - Google Cloud SDK
-    - Git
-
-### Running Tests
-
-Once inside the `nix develop` shell, you can run the full suite of tests, including those requiring emulators:
-
-```bash
-# Run all E2E tests
-npm run test:e2e
-
-# Update snapshots
-npx playwright test --update-snapshots
+```sh
+nix develop
 ```
+
+Install both dependency trees and Playwright Chromium:
+
+```sh
+npm ci
+npm ci --prefix functions
+npx playwright install chromium
+```
+
+## Configuration
+
+Copy `.env.example` to `.env`. Vite reads the `VITE_*` values during the web build. Production values are GitHub environment secrets and are never committed.
+
+Functions provenance parameters are populated by CI. For local work, optional `functions/.env.local` values are:
+
+```dotenv
+BUILD_GIT_SHA=development
+DATABASE_RULES_GIT_SHA=development
+ALERT_WEBHOOK_URL=
+```
+
+## Checks
+
+Run static checks and production builds:
+
+```sh
+npm run check
+npm run build --prefix functions
+npm run build
+```
+
+Run all integration and exact screenshot tests with Auth, Realtime Database, and Functions emulators:
+
+```sh
+npx firebase emulators:exec --only auth,database,functions --project demo-antigravity-uptime "npm run test:e2e"
+```
+
+Regenerate visual baselines only after intentionally reviewing a UI change:
+
+```sh
+npx firebase emulators:exec --only auth,database,functions --project demo-antigravity-uptime "npm run test:e2e:update"
+```
+
+The test configuration permits zero different pixels. CI runs on macOS with the same browser and rendering flags used to create committed baselines.

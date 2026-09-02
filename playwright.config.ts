@@ -2,11 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
 	testDir: './tests/e2e',
-	fullyParallel: true,
+	globalSetup: './tests/e2e/global-setup.ts',
+	fullyParallel: false,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 1 : undefined,
-	reporter: 'html',
+	workers: 1,
+	reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'html',
 	use: {
 		actionTimeout: 5000,
 		navigationTimeout: 5000,
@@ -28,13 +29,13 @@ export default defineConfig({
 				'--use-gl=swiftshader',
 				'--disable-smooth-scrolling',
 				'--disable-partial-raster',
-				'--disable-partial-raster',
 			],
 		},
 		viewport: { width: 1280, height: 720 },
 		deviceScaleFactor: 1,
 		timezoneId: 'America/New_York',
 		locale: 'en-US',
+		colorScheme: 'light',
 	},
 	snapshotPathTemplate: '{testDir}/{testFileDir}/screenshots/{arg}.png',
 	projects: [

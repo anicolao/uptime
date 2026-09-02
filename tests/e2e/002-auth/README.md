@@ -1,16 +1,16 @@
 # Authentication
 
-Verifies the authentication flow, including sign-in and protected route access.
+Verifies authentication, private routing, provenance, and administrator access control.
 
 ## Test Steps
 
 ### 01-auth-wall
 
-**Description:** Unauthenticated user sees the Auth Wall
+**Description:** Unauthenticated users see the authentication wall.
 
 **Verifications:**
-- Auth Wall heading is visible
-- Sign-in prompt text is visible
+- Authentication heading is visible
+- Sign-in prompt is visible
 - Sign-in button is visible
 
 ![Screenshot](screenshots/01-auth-wall.png)
@@ -19,14 +19,14 @@ Verifies the authentication flow, including sign-in and protected route access.
 
 ### 02-authenticated-dashboard
 
-**Description:** Authenticated user sees the Dashboard and Navigation
+**Description:** Authenticated users are redirected to the private dashboard and can see component provenance.
 
 **Verifications:**
-- Auth Window is gone
-- Nav is visible
+- Primary navigation is visible
 - Dashboard link is visible
 - Admin link is visible
 - URL is /dashboard
+- All component versions are reported
 
 ![Screenshot](screenshots/02-authenticated-dashboard.png)
 
@@ -34,10 +34,11 @@ Verifies the authentication flow, including sign-in and protected route access.
 
 ### 03-admin-page
 
-**Description:** Admin page loads
+**Description:** An authenticated non-admin is denied administrator controls.
 
 **Verifications:**
-- Header is "Admin Dashboard"
+- Admin page loads
+- Administrator access is required
 - URL is /admin
 
 ![Screenshot](screenshots/03-admin-page.png)

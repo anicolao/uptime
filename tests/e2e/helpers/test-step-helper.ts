@@ -16,7 +16,7 @@ export interface StepConfig {
 export class TestStepHelper {
     private page: Page;
     private testInfo: TestInfo;
-    private steps: { name: string; description: string; verifications: string[] }[] = [];
+    private steps: { name: string; screenshot: string; description: string; verifications: string[] }[] = [];
     private title: string = '';
     private summary: string = '';
 
@@ -37,18 +37,22 @@ export class TestStepHelper {
             await action();
         }
 
-        // Visual Snapshot
-        const screenshotName = `${name}.png`;
-        await expect(this.page).toHaveScreenshot(screenshotName);
-
         // Verifications
         for (const v of config.verifications) {
             await v.check();
         }
 
+        // Dynamic values are masked; every remaining pixel must match exactly.
+        const screenshotName = `${name.replace(/[^A-Za-z0-9._-]+/g, '-')}.png`;
+        await expect(this.page).toHaveScreenshot(screenshotName, {
+            mask: [this.page.locator('[data-screenshot-dynamic]')],
+            maskColor: '#dbe3ee'
+        });
+
         // Record for docs
         this.steps.push({
             name,
+            screenshot: screenshotName,
             description: config.description,
             verifications: config.verifications.map(v => v.spec)
         });
@@ -74,7 +78,7 @@ export class TestStepHelper {
             step.verifications.forEach(v => {
                 md += `- ${v}\n`;
             });
-            md += `\n![Screenshot](screenshots/${step.name}.png)\n\n`;
+            md += `\n![Screenshot](screenshots/${step.screenshot})\n\n`;
             md += `---\n\n`;
         });
 

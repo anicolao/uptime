@@ -1,73 +1,49 @@
-# MVP Design: 1-Minute Firebase Monitor
+# MVP design: private one-minute Firebase monitor
 
-## Goal
-Build a robust, cost-effective uptime monitor that checks services every **1 minute** using the **Firebase Free Tier** (Spark Plan).
+## Product boundary
+
+Uptime is an internal tool. Every application route and every database read requires Firebase Authentication. The administrator surface and all event writes additionally require an administrator record at `admins/{uid}: true`. There is no public status page.
 
 ## Architecture
 
-1.  **Trigger**: Google Cloud Scheduler fires a Pub/Sub event every 1 minute.
-2.  **Execution**: A Firebase Cloud Function (Gen 2 or Gen 1) receives the event.
-    -   It fetches the list of services to monitor (from config or RTDB).
-    -   It performs HTTP/HTTPS checks on all services in parallel.
-    -   It writes the results (status, latency, timestamp) to Firebase Realtime Database (RTDB).
-    -   It terminates immediately to minimize compute time.
-3.  **Storage**: Firebase Realtime Database (RTDB).
-    -   Used instead of Firestore to avoid daily write limits (50k/day).
-    -   Stores current status for the dashboard.
-    -   Stores historical data with a retention policy (e.g., maintain last 24h detailed, then aggregate).
-4.  **Frontend**: SvelteKit App hosted on Firebase Hosting.
-    -   Subscribes to RTDB for real-time status updates.
-    -   Displays a dashboard of service health.
+1. The SvelteKit static client is hosted by Firebase Hosting. Svelte components own their scoped CSS; Tailwind is not part of the stack.
+2. Firebase Authentication provides Google sign-in. The root Svelte layout renders route content only for an authenticated user.
+3. Administrators append validated `ADD_SERVICE`, `UPDATE_SERVICE`, and `REMOVE_SERVICE` events to Realtime Database.
+4. A database-triggered Function validates each event again and maintains the `services` projection.
+5. A scheduled Function runs every minute. It checks all services concurrently with a ten-second request timeout, stores current state under `status`, and retains detailed `history` for 24 hours.
+6. A database lock prevents overlapping checks. An authenticated administrator-only endpoint can request an immediate check.
+7. An optional webhook receives initial-down and subsequent state-transition alerts.
+8. The authenticated UI reports the exact web, Functions, and database-rules Git SHAs deployed together.
 
-## Cost Analysis (Free Tier Limits)
+## Data ownership
 
-| Resource | Limit (Spark) | Estimated Usage | Status |
-| :--- | :--- | :--- | :--- |
-| **Cloud Functions** | 2M invocations/mo | ~43.2k/mo (1/min) | ✅ **Safe** (~2%) |
-| **Compute Time** | 400k GB-seconds/mo | ~10.8k GB-seconds | ✅ **Safe** (~2.7%) |
-| **RTDB Storage** | 1 GB | ~5 MB/mo (with retention) | ✅ **Safe** |
-| **RTDB Downloads** | 10 GB/mo | Approaches limit if many concurrent users | ⚠️ Monitor |
+| Path | Authenticated read | Client write | Server write |
+| --- | --- | --- | --- |
+| `events` | administrators only | administrators, append-only and validated | no |
+| `services` | yes | no | event projector |
+| `status` | yes | no | monitor |
+| `history` | yes | no | monitor |
+| `admins/{uid}` | own record only | no | provisioning only |
+| `system` | yes | no | monitor |
 
-## Implementation Roadmap
+The Functions Admin SDK is trusted to update projections and results. Rules deny every unspecified path.
 
-### Phase 1: Project Setup (Current State)
-- [x] Initialize SvelteKit app.
-- [x] Configure Firebase project.
-- [ ] Set up local emulators for Functions, RTDB, and Hosting.
+## Deployment and provenance
 
-### Phase 2: Backend (Cloud Functions)
-- [ ] Initialize Cloud Functions: `firebase init functions`.
-- [ ] Implement `checkServices` function:
-    -   Trigger: `onSchedule("every 1 minutes")`.
-    -   Logic: Parallel `fetch()` requests.
-    -   Output: write to `status/{serviceId}` and `history/{serviceId}/{timestamp}`.
-- [ ] Define service configuration (JSON or RTDB path).
+The production workflow checks the Svelte and TypeScript projects, builds both packages, authenticates to Google Cloud, and performs one Firebase CLI deployment containing Hosting, Functions, and Realtime Database rules. It injects the workflow commit as:
 
-### Phase 3: Database (RTDB)
-- [ ] define Data Structure:
-    ```json
-    {
-      "services": {
-        "google": { "url": "https://google.com", "name": "Google" }
-      },
-      "status": {
-        "google": { "up": true, "latency": 120, "lastChecked": 1670000000000 }
-      },
-      "history": {
-        "google": {
-          "1670000000000": { "up": true, "latency": 120 }
-        }
-      }
-    }
-    ```
-- [ ] Set up Security Rules (Read: Public/Auth, Write: Admin only).
+- `VITE_GIT_SHA` in the web bundle;
+- `BUILD_GIT_SHA` in Functions configuration;
+- `DATABASE_RULES_GIT_SHA` in Functions configuration for the rules deployed by that same command.
 
-### Phase 4: Frontend (Dashboard)
-- [ ] Create `Monitor` component.
-- [ ] Connect to RTDB using `firebase/database`.
-- [ ] Visualize real-time status.
+The private footer combines the web value with the protected `/api/version` response.
 
-### Phase 5: Deployment & Verification
-- [ ] Deploy to Firebase: `firebase deploy`.
-- [ ] Verify 1-minute execution interval in GCP Console.
-- [ ] Verify free tier usage quotas.
+Scheduled Functions require a billing-enabled Firebase project. Runtime usage and webhook-provider costs must be monitored against the project's actual plan rather than assuming Spark-plan availability.
+
+## Verification
+
+- Svelte and TypeScript checks must have no errors or warnings.
+- Both production builds must succeed on Node.js 22.
+- Security-rule tests prove anonymous reads fail and only administrators append events.
+- Emulator E2E proves an admin event reaches the trigger, a protected check runs, and status appears in the private dashboard.
+- Screenshot comparisons require exactly zero different pixels.

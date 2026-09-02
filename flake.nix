@@ -17,7 +17,7 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            nodejs_20
+            nodejs_22
             google-cloud-sdk
             git
             jdk21 # Java is required for Firebase Emulators (Requires 21+)

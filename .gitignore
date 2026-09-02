@@ -36,10 +36,12 @@ vite.config.js.timestamp-*
 *.njsproj
 *.sln
 *.sw?
+gha-creds-*.json
 *-debug.log
 
 # Local logs
 ci_log*.txt
+firebase.local.json
 
 # Backups
 *.bak

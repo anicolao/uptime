@@ -1,72 +1,72 @@
-name: Update Screenshots
+name: Update screenshots
 
 on:
-  push:
-    branches: [feature/mvp-implementation]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
-  update-screenshots:
-    name: Update Playwright Screenshots
+  update:
+    name: Regenerate zero-tolerance baselines
     runs-on: macos-latest
     timeout-minutes: 30
+    env:
+      CI: "1"
+      BUILD_GIT_SHA: ${{ github.sha }}
+      DATABASE_RULES_GIT_SHA: ${{ github.sha }}
+      VITE_GIT_SHA: ${{ github.sha }}
+      VITE_FIREBASE_API_KEY: test-api-key
+      VITE_FIREBASE_AUTH_DOMAIN: demo-antigravity-uptime.firebaseapp.com
+      VITE_FIREBASE_PROJECT_ID: demo-antigravity-uptime
+      VITE_FIREBASE_STORAGE_BUCKET: demo-antigravity-uptime.appspot.com
+      VITE_FIREBASE_MESSAGING_SENDER_ID: "123456789"
+      VITE_FIREBASE_APP_ID: 1:123456789:web:test
+      VITE_FIREBASE_DATABASE_URL: https://demo-antigravity-uptime.firebaseio.com
+      VITE_FIREBASE_USE_EMULATORS: "true"
+      VITE_FUNCTIONS_BASE_URL: http://127.0.0.1:5001/demo-antigravity-uptime/us-central1
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            functions/package-lock.json
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
 
       - name: Install dependencies
         run: |
           npm ci
           npm ci --prefix functions
-        env:
-          VITE_FIREBASE_USE_EMULATORS: "true"
+          npx playwright install chromium
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Build app and functions
+      - name: Build entire system
         run: |
-          npm run build
           npm run build --prefix functions
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: demo-antigravity-uptime
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-          VITE_FIREBASE_DATABASE_URL: ${{ secrets.VITE_FIREBASE_DATABASE_URL }}
-          VITE_FIREBASE_USE_EMULATORS: "true"
+          npm run build
 
-      - name: Update Screenshots
-        run: CI=1 npx firebase emulators:exec --project demo-antigravity-uptime "npx playwright test --update-snapshots"
-        env:
-          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_PROJECT_ID: demo-antigravity-uptime
-          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}
-          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}
-          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
-          VITE_FIREBASE_DATABASE_URL: ${{ secrets.VITE_FIREBASE_DATABASE_URL }}
-          VITE_FIREBASE_USE_EMULATORS: "true"
+      - name: Regenerate and verify screenshots
+        run: npx firebase emulators:exec --only auth,database,functions --project demo-antigravity-uptime "npx playwright test --update-snapshots"
 
-      - name: Commit and Push changes
+      - name: Commit baselines
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add tests/e2e/**/screenshots/*.png
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/e2e/**/screenshots/*.png tests/e2e/**/README.md
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "Screenshot baselines are already current"
           else
-            git commit -m "test: update e2e screenshots from CI environment"
+            git commit -m "test: update zero-tolerance screenshot baselines"
             git push
           fi

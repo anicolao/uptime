@@ -1,72 +1,77 @@
 # MVP Journey
 
-Verifies the full loop from Admin UI to Event to Service to Monitor.
+Verifies the private workflow from an administrator event through service projection and an authenticated monitor check.
 
 ## Test Steps
 
 ### Navigate to Home
 
-**Description:** Load the application
+**Description:** Load the private application while signed out.
 
 **Verifications:**
-- Auth Heading
+- Authentication is required
 
-![Screenshot](screenshots/Navigate to Home.png)
+![Screenshot](screenshots/Navigate-to-Home.png)
 
 ---
 
 ### Login and Seed Admin
 
-**Description:** Login as test user and seed admin permissions
+**Description:** Sign in through the Auth emulator and grant the test user administrator access.
 
 **Verifications:**
-- User is Admin
+- User is signed in
+- Component provenance is available
 
-![Screenshot](screenshots/Login and Seed Admin.png)
+![Screenshot](screenshots/Login-and-Seed-Admin.png)
 
 ---
 
-### Admin: Add Service
+### Admin Add Service
 
-**Description:** Navigate to Admin and add a service
+**Description:** Dispatch an ADD_SERVICE event from the administrator UI.
 
 **Verifications:**
-- Success Message
-- Event in List
+- Success message is visible
+- Event log contains ADD_SERVICE
+- Event log contains the service
 
-![Screenshot](screenshots/Admin: Add Service.png)
+![Screenshot](screenshots/Admin-Add-Service.png)
 
 ---
 
 ### Verify Service Processing
 
-**Description:** Wait for Cloud Function to process event and create service
+**Description:** Verify the database-triggered Function projects the event into services.
 
 **Verifications:**
+- Projected service exists
 
-![Screenshot](screenshots/Verify Service Processing.png)
+![Screenshot](screenshots/Verify-Service-Processing.png)
 
 ---
 
 ### Trigger Monitor
 
-**Description:** Manually trigger the monitor function
+**Description:** Run the protected manual monitor endpoint as the administrator.
 
 **Verifications:**
+- Monitor records an operational status
 
-![Screenshot](screenshots/Trigger Monitor.png)
+![Screenshot](screenshots/Trigger-Monitor.png)
 
 ---
 
 ### Verify Dashboard Status
 
-**Description:** Check dashboard for UP status
+**Description:** Display the monitored service and its current status on the private dashboard.
 
 **Verifications:**
-- Service Visible
-- Status OPERATIONAL
+- Service is visible
+- Status is operational
+- HTTP status is displayed
 
-![Screenshot](screenshots/Verify Dashboard Status.png)
+![Screenshot](screenshots/Verify-Dashboard-Status.png)
 
 ---
 

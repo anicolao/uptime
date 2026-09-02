@@ -2,17 +2,15 @@
     import { signIn, signOut } from '$lib/firebase';
     import { user } from '$lib/stores';
 
-    // Simple reactive logic
-    // In Svelte 5, runelike reactivity is nicer but stores work seamlessly with $ prefix
 </script>
 
 {#if $user}
     <div class="user-profile">
-        <span>{$user.displayName}</span>
-        <button on:click={signOut}>Sign Out</button>
+        <span>{$user.displayName || $user.email}</span>
+        <button onclick={signOut}>Sign Out</button>
     </div>
 {:else}
-    <button on:click={signIn}>Sign in with Google</button>
+    <button onclick={signIn}>Sign in with Google</button>
 {/if}
 
 <style>
@@ -26,7 +24,7 @@
         background: #4285f4;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 0.4rem;
         cursor: pointer;
         font-weight: bold;
     }

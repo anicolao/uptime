@@ -1,18 +1,20 @@
 <script lang="ts">
-  import StatusDashboard from '$lib/components/StatusDashboard.svelte';
+  import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
+
+  onMount(() => {
+    void goto(`${base}/dashboard`, { replaceState: true });
+  });
 </script>
 
-<div class="container mx-auto p-4">
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-4xl font-bold text-gray-800">System Status</h1>
-    <div class="text-sm text-gray-500">
-        Updates automatically
-    </div>
-  </div>
+<p class="redirect">Opening dashboard…</p>
 
-  <StatusDashboard />
-  
-  <div class="mt-12 text-center text-gray-400 text-sm">
-      <a href="/admin" class="hover:underline">Admin Login</a>
-  </div>
-</div>
+<style>
+  .redirect {
+    margin: 0;
+    padding: 3rem;
+    color: #64748b;
+    text-align: center;
+  }
+</style>
